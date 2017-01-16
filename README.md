@@ -3,7 +3,7 @@
 
 This program creates a swarm of particles that spin around the screen and change colors.
 
-<h2>The Simulation In Action (Click Image)</h2>
+<h2>The Simulation In Action (Click Images For Video)</h2>
 <p align="left">
   <a href="https://youtu.be/6jXk6qDlttA"><img src="https://s29.postimg.org/daaszf7hz/Screen_Shot_2017_01_16_at_10_10_33_AM.png" width="400px"/></a>
   <a href="https://youtu.be/6jXk6qDlttA"><img src="https://s30.postimg.org/wz9c6nwqp/Screen_Shot_2017_01_16_at_10_28_36_AM.png" width="400px"/></a>

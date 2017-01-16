@@ -5,7 +5,7 @@ This program creates a swarm of particles that spin around the screen and change
 
 <h2>The Simulation In Action</h2>
 <p align="left">
-  [![IMAGE ALT TEXT](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/EiVB7RiCr9I "Particle Simulation")
+  <iframe src="//giphy.com/embed/2YrVz2VprRPNK" width="480" height="394" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="http://giphy.com/gifs/2YrVz2VprRPNK">via GIPHY</a></p>
 </p>
 
 <h2>How It Works</h2>

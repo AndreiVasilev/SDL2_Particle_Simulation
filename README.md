@@ -3,9 +3,9 @@
 
 This program creates a swarm of particles that spin around the screen and change colors.
 
-<h2>The Simulation In Action</h2>
+<h2>The Simulation In Action (Click Image)</h2>
 <p align="left">
-  <img src = "https://s29.postimg.org/daaszf7hz/Screen_Shot_2017_01_16_at_10_10_33_AM.png" />
+  [![Particle Simulation](https://s29.postimg.org/daaszf7hz/Screen_Shot_2017_01_16_at_10_10_33_AM.png)](https://youtu.be/6jXk6qDlttA)
 </p>
 
 <h2>How It Works</h2>

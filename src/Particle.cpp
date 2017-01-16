@@ -29,7 +29,7 @@ namespace ps {
         // Changes particle direction from straight to curved/circular
         m_direction += (interval * 0.0005);
 
-        // Changes particle coordinates from cartesian to polar
+        // Changes particle coordinate plane from cartesian to polar
         m_x_speed = m_speed * sin(m_direction);
         m_y_speed = m_speed * cos(m_direction);
 

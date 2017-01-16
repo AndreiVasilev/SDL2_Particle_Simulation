@@ -5,7 +5,7 @@ This program creates a swarm of particles that spin around the screen and change
 
 <h2>The Simulation In Action</h2>
 <p align="left">
-  <img src = "https://media.giphy.com/media/2YrVz2VprRPNK/giphy.gif" />
+  <img src = "https://media.giphy.com/media/wLlPfYpZXQm88/giphy.gif" />
 </p>
 
 <h2>How It Works</h2>

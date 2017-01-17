@@ -3,11 +3,11 @@
 //
 
 #include "Screen.h"
-#include <iostream>
 
 namespace ps {
 
     Screen::Screen() : m_window{nullptr}, m_renderer{nullptr}, m_texture{nullptr}, m_main_buffer{nullptr} {
+        // Initialize all required SDL functionality and create SDL objects.
         init_SDL();
         init_window();
         init_renderer();
@@ -16,6 +16,7 @@ namespace ps {
     }
 
     Screen::~Screen() {
+        // Destroy all SDL related objects.
         delete [] m_main_buffer;
         delete [] m_blur_buffer;
         SDL_DestroyRenderer(m_renderer);
@@ -58,10 +59,10 @@ namespace ps {
         // of the associated window. Textures to be rendered pass through this renderer and when
         // done rendering are sent to the window to be displayed.
         m_renderer = SDL_CreateRenderer(
-            m_window,                      // Window associated with renderer
-            -1,                            // Index of rendering driver to initialize, -1 to use first available
-            SDL_RENDERER_PRESENTVSYNC |    // Synchronize rendering with window refresh rate
-            SDL_RENDERER_ACCELERATED);     // Allow renderer to use hardware acceleration
+            m_window,                      // Window associated with the renderer.
+            -1,                            // Index of rendering driver to initialize, -1 to use first available.
+            SDL_RENDERER_PRESENTVSYNC |    // Synchronize rendering with window refresh rate.
+            SDL_RENDERER_ACCELERATED);     // Allow renderer to use hardware acceleration.
 
         // Check if renderer creation failed.
         if(m_renderer == nullptr) {
@@ -75,11 +76,11 @@ namespace ps {
     void Screen::init_texture() {
         // Creates an SDL texture struct: a set of pixel data to be sent to the renderer.
         m_texture = SDL_CreateTexture(
-                m_renderer,                 // The rendering context that this texture will pass through
-                SDL_PIXELFORMAT_RGBA8888,   // The format of the pixel color information, RGBA 8 bits per channel
-                SDL_TEXTUREACCESS_STATIC,   // How the texture is accessed when updated
-                SCREEN_WIDTH,               // Texture width in pixels, equals associated window width
-                SCREEN_HEIGHT               // Texture height in pixels, equals associated window height
+            m_renderer,                    // The rendering context that this texture will pass through.
+            SDL_PIXELFORMAT_RGBA8888,      // The format of the pixel color information, RGBA 8 bits per channel.
+            SDL_TEXTUREACCESS_STATIC,      // How the texture is accessed when updated.
+            SCREEN_WIDTH,                  // Texture width in pixels, equals associated window width.
+            SCREEN_HEIGHT                  // Texture height in pixels, equals associated window height.
         );
 
         // Check if texture creation failed.
@@ -93,6 +94,8 @@ namespace ps {
 
 
     void Screen::init_buffers() {
+        // Initialize main_buffer and blur_buffer memory. During runtime, buffers are loaded with
+        // particle objects and then fed to the SDL texture to be rendered within the SDL window.
         m_main_buffer = new Uint32[SCREEN_HEIGHT * SCREEN_WIDTH];
         memset(m_main_buffer, 0, SCREEN_HEIGHT * SCREEN_WIDTH * sizeof(Uint32));
 
@@ -102,25 +105,57 @@ namespace ps {
 
 
     void Screen::update() {
-        SDL_UpdateTexture(m_texture, NULL, m_main_buffer, SCREEN_WIDTH * sizeof(Uint32));
-        SDL_RenderClear(m_renderer);
-        SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
+        // Updates the texture containing the pixel data.
+        SDL_UpdateTexture(
+            m_texture,                      // Texture to be updated.
+            NULL,                           // Area in texture to update, NULL for entire area.
+            m_main_buffer,                  // Updated pixel data being sent to the texture.
+            SCREEN_WIDTH * sizeof(Uint32)   // Number of bytes in a row of pixel data.
+        );
+
+        // Copies the newly updated texture into the renderer.
+        SDL_RenderCopy(
+            m_renderer,    // The renderer to be updated.
+            m_texture,     // The source texture.
+            NULL,          // Amount of texture to be copied, NULL for entire texture.
+            NULL           // Amount of renderer to be updated, NULL for entire renderer.
+        );
+
         SDL_RenderPresent(m_renderer);
     }
 
+
+    void Screen::load_swarm(Swarm &swarm) {
+        // Load swarm particles.
+        const Particle * const p_particles = swarm.get_particles();
+
+        // Generate colors to update swarm.
+        int elapsed = SDL_GetTicks();
+        unsigned char red = static_cast<unsigned char>(   (sin(elapsed * 0.0001) + 1) * 128  ),
+                      green = static_cast<unsigned char>( (sin(elapsed * 0.0002) + 1) * 128  ),
+                      blue = static_cast<unsigned char>(  (sin(elapsed * 0.0003) + 1) * 128  );
+
+        // Load swarm with updated colors into main_buffer.
+        for(int i = 0; i < Swarm::N_PARTICLES; ++i) {
+            ps::Particle particle = p_particles[i];
+            int x = static_cast<int>((particle.m_x_cord + 1) * SCREEN_WIDTH / 2);
+            int y = static_cast<int>(particle.m_y_cord * SCREEN_WIDTH / 2 + SCREEN_HEIGHT/2);
+            set_pixel_color(x, y, red, green, blue);
+        }
+    }
+
+
     void Screen::box_blur() {
-        // Blur is applied to blur_buffer and then swapped with main_buffer next iteration
+        // Main_buffer and blur_buffer are swapped, blur is applied to blur_buffer, and then
+        // during each next iteration buffers are swapped again to display the blur on screen.
         std::swap(m_main_buffer, m_blur_buffer);
 
-        // Iterate through all pixels of SDL window, get average color of surrounding pixels,
-        // and apply average color to each pixel. Creates a gaussian blur effect.
+        // Iterates through each pixel in the buffer, gets average color of surrounding pixels,
+        // and applies average surrounding color to each pixel. Creates a gaussian blur effect.
         for(int y = 0; y < SCREEN_HEIGHT; ++y) {
             for(int x = 0; x < SCREEN_WIDTH; ++x) {
-
                 Uint8 red{0}, green{0}, blue{0};
-
                 get_avg_color(x, y, red, green, blue);
-
                 set_pixel_color(x, y, red, green, blue);
             }
         }
@@ -130,27 +165,27 @@ namespace ps {
     void Screen::get_avg_color(int x, int y, Uint8 &red, Uint8 &green, Uint8 &blue) {
         int red_total{0}, green_total{0}, blue_total{0};
 
-        // Totals the color values of the current pixel (x, y) and its 8 surrounding pixels
+        // Totals the color values of the input pixel (x, y) and the 8 pixels that surround it.
         for(int row = -1; row <= 1; ++row) {
             for(int col = -1; col <= 1; ++col) {
-
                 int current_x = x + col,
-                        current_y = y + row;
+                    current_y = y + row;
 
                 // Only grab values of pixels that are actually within the window
                 if(current_x >= 0 && current_x < SCREEN_WIDTH &&
                    current_y >= 0 && current_y < SCREEN_HEIGHT) {
+
+                    // Get the color value of the current pixel
                     Uint32 color = m_blur_buffer[current_x + (current_y * SCREEN_WIDTH)];
 
-                    // Bit shift RGB values of color into totals
+                    // Bit shift RGB values of pixel color into color totals.
                     red_total += static_cast<Uint8>(color >> 24);
                     green_total += static_cast<Uint8>(color >> 16);
                     blue_total += static_cast<Uint8>(color >> 8);
                 }
             }
         }
-
-        // Averages the color values of the current pixel (x, y) and its 8 surrounding pixels.
+        // Averages the color values of the input pixel (x, y) and its 8 surrounding pixels.
         // Changing the denominator here can create interesting visual effects.
         red = static_cast<Uint8>(red_total/9);
         green = static_cast<Uint8>(green_total/9);
@@ -160,7 +195,7 @@ namespace ps {
 
     void Screen::set_pixel_color(int x, int y, Uint8 red, Uint8 green, Uint8 blue) {
 
-        // Don't include particles outside the boundaries of the SDL window
+        // Ignore particles with coordinates outside the boundaries of the SDL window
         if(x < 0 || x >= ps::Screen::SCREEN_WIDTH || y < 0 || y >= ps::Screen::SCREEN_HEIGHT)
             return;
 
@@ -180,6 +215,7 @@ namespace ps {
 
 
     bool Screen::quit_program() {
+        // Check for SDL events. If the window is closed, quit the program.
         while(SDL_PollEvent(&m_event)) {
             if(m_event.type == SDL_QUIT)
                 return true;

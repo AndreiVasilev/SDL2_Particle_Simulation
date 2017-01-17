@@ -83,9 +83,9 @@ Particles move by having their coordinates changed. These coordinates are saved 
     }
 ```
 <br><br>
-<h4>The Swarm Class</h4>
+<h3>The Swarm Class</h3>
 
-The swarm class is a container for all the particles. All particles are saved within an array and can be accessed individually.
+The swarm class is a container for all particles. All particles are saved within an array and can be accessed individually. From here you can also change the total amount of particles that will be created when the program is run.
 ```sh
     class Swarm {
         public:
@@ -102,5 +102,59 @@ The swarm class is a container for all the particles. All particles are saved wi
             Particle *m_particle_array { nullptr };
             int last_clock;
             int interval;
+    };
+```
+<br><br>
+The only method carried out by the swarm class is move(), which calls the particle.move() function (explained above) on all particles within the particle swarm array.
+```sh
+void Swarm::move(int elapsed) {
+       /* Interval between last particle position update and current update is used
+        * to ensure that particle movement stays consistent and proportional to the
+        * amount of time between updates. Helps to maintain smooth movement. During
+        * the first actual update interval is kept at zero to prevent a large particle
+        * position jump from occurring. */
+        if(last_clock == 0)
+            interval = 0;
+        else
+            interval = elapsed - last_clock;
+
+        last_clock = elapsed;
+
+        // Update all particle positions within the swarm.
+        for(int i = 0; i < N_PARTICLES; ++i)
+            m_particle_array[i].move_particle(interval);
+    }
+```
+<br><br>
+<h3>The Screen Class</h3>
+This class does all of the heavy lifting. It is in charge of all SDL functionality, such as generating the window, renderer, and texture objects, as well as generating the color values of the particles and loading them on screen. I will only be explaining the functions that have to do with the functionality of this program specifically, which excludes the SDL functions.
+```sh
+class Screen {
+        public:
+            const static int SCREEN_WIDTH {1000};
+            const static int SCREEN_HEIGHT {800};
+
+        public:
+            Screen();
+            virtual ~Screen();
+            void init_SDL();
+            void init_window();
+            void init_renderer();
+            void init_texture();
+            void init_buffers();
+            void update();
+            void box_blur();
+            void load_swarm(Swarm &);
+            void set_pixel_color(int, int, Uint8, Uint8, Uint8);
+            void get_avg_color(int, int, Uint8 &, Uint8 &, Uint8 &);
+            bool quit_program();
+
+        private:
+            SDL_Window *m_window { nullptr };
+            SDL_Renderer *m_renderer { nullptr };
+            SDL_Texture *m_texture { nullptr };
+            Uint32 *m_main_buffer { nullptr };
+            Uint32 *m_blur_buffer { nullptr };
+            SDL_Event m_event;
     };
 ```

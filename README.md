@@ -229,7 +229,7 @@ Once all particles have been looked at, and the buffer has been correspondingly 
 After this, the particles within the swarm array are moved (through a process explained earlier) for the next program cycle. After the particles have been moved, a gaussian blur is applied to the currently rendered SDL window. This blur effect is created by averaging out colors. Each pixel on screen is effectively reassigned a color which is the average of itself and the 8 pixels that surround it.
 However, this process is not carried out by looking at the actual screen, but instead by looking at the buffer that was just previously loaded. The buffer is processed, colors are averaged out, and then the buffer is reloaded to the screen. 
 
-This effect causes the "particles" too look as though they are leaving a trail behind as they travel. This effect also takes care of having to clear the screen. Normally, you would have to clear the texture every time you load
+This effect causes the "particles" to look as though they are leaving a trail behind as they travel. This effect also takes care of having to clear the screen. Normally, you would have to clear the texture every time you load new particles otherwise the particles would basically draw lines across the screen as they move. However, because the color is constantly being averaged out, the only areas that remain colorful are areas that are close to particles. The other areas average out to the color black, effectively clearing the screen of particle lines after the particles move.
 ```sh
     void Screen::box_blur() {
         // Main_buffer and blur_buffer are swapped, blur is applied to blur_buffer, and then
@@ -278,3 +278,6 @@ This effect causes the "particles" too look as though they are leaving a trail b
         blue = static_cast<Uint8>(blue_total/9);
     }
 ```
+<br>
+<h2>Conclusion</h2>
+I had a lot of fun creating this project and I also learned a LOT. I plan on continuing to learn the SDL library and will hopefully soon be creating a project that is some sort of combination between this program and my genetic algorithm. Possibly training particles to solve some sort of problem? We shall see!

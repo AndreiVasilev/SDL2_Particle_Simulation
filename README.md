@@ -14,7 +14,7 @@ This program renders a swarm of particles on screen that spin around in a cirula
 </p>
 
 <h2>How It Works</h2>
-A 2D array of color values is loaded to the screen in a repeatedly fast fashion. The brightest color values are localized to one pixel at a time, indicating where the "particles" are on screen. These color values are shifted throughout the 2D array (and in turn from pixel to pixel on screen) which creates the illusion that there are particles flying around. 
+A 2D array of color values is loaded to the screen in a repeatedly fast fashion. The brightest color values are localized to one pixel at a time, indicating where the "particles" are on screen. These color values are shifted throughout the 2D array (and in turn from pixel to pixel on screen) which creates the illusion of particles flying around. 
 
 <br>
 <h3>The "Particle" Class</h3>

@@ -17,7 +17,7 @@ This program renders a swarm of particles on screen that spin around in a cirula
 A 2D array of color values is loaded to the screen in a repeatedly fast fashion. The brightest color values are localized to one pixel at a time, indicating where the "particles" are on screen. These color values are shifted throughout the 2D array (and in turn from pixel to pixel on screen) which creates the illusion that there are particles flying around. 
 
 <br>
-<b>The "Particle" Class</b>
+<h3>The "Particle" Class</h3>
 
 Each particle (or focal point of brightness) contains 3 essential parts: an x-coordinate, a y-coordinate, and a vector (a speed and direction). As the program runs, the vector is what dictates where the particle will move to next.
 ```sh
@@ -83,7 +83,7 @@ Particles move by having their coordinates changed. These coordinates are saved 
     }
 ```
 <br><br>
-<b>The Swarm Class</b>
+<h4>The Swarm Class</h4>
 
 The swarm class is a container for all the particles. All particles are saved within an array and can be accessed individually.
 ```sh

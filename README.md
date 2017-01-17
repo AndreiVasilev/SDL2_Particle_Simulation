@@ -127,7 +127,7 @@ void Swarm::move(int elapsed) {
 ```
 <br><br>
 <h3>The Screen Class</h3>
-This class does all of the heavy lifting. It is in charge of all SDL functionality, such as generating the window, renderer, and texture objects, as well as generating the color values of the particles and loading them on screen. I will only be explaining the functions that have to do with the functionality of this program specifically, which excludes the SDL functions.
+This class does all of the heavy lifting. It is in charge of all SDL functionality, such as generating the window, renderer, and texture objects, as well as generating the color values of the particles and loading them on screen. The pixels (particles) that are saved within the swarm class array are loaded into a buffer, the buffer is loaded into a texture, the texture is loaded into the renderer, and the renderer renders the pixels into the SDL window.
 ```sh
 class Screen {
         public:
@@ -157,4 +157,48 @@ class Screen {
             Uint32 *m_blur_buffer { nullptr };
             SDL_Event m_event;
     };
+```
+<br><br>
+The screen.load_swarm() method is where the magic starts to happen. Each particle within the swarm particle array is looked at. The coordinates saved within each particle object are taken and mapped to a position within the buffer that corresponds to a position within the 2D pixel array of the SDL window. The set_pixel_color() method then takes that position in the buffer and fills it with a hexidecimal color code. In turn, what appears on screen is a pixel (or particle) with that assigned color.
+```sh
+    void Screen::load_swarm(Swarm &swarm) {
+        // Load swarm particles.
+        const Particle * const p_particles = swarm.get_particles();
+
+        // Generate colors to update swarm.
+        int elapsed = SDL_GetTicks();
+        unsigned char red = static_cast<unsigned char>(   (sin(elapsed * 0.0001) + 1) * 128  ),
+                      green = static_cast<unsigned char>( (sin(elapsed * 0.0002) + 1) * 128  ),
+                      blue = static_cast<unsigned char>(  (sin(elapsed * 0.0003) + 1) * 128  );
+
+        // Load swarm with updated colors into main_buffer.
+        for(int i = 0; i < Swarm::N_PARTICLES; ++i) {
+            ps::Particle particle = p_particles[i];
+            int x = static_cast<int>((particle.m_x_cord + 1) * SCREEN_WIDTH / 2);
+            int y = static_cast<int>(particle.m_y_cord * SCREEN_WIDTH / 2 + SCREEN_HEIGHT/2);
+            set_pixel_color(x, y, red, green, blue);
+        }
+    }
+```
+<br>
+```sh
+    void Screen::set_pixel_color(int x, int y, Uint8 red, Uint8 green, Uint8 blue) {
+
+        // Ignore particles with coordinates outside the boundaries of the SDL window
+        if(x < 0 || x >= ps::Screen::SCREEN_WIDTH || y < 0 || y >= ps::Screen::SCREEN_HEIGHT)
+            return;
+
+        Uint32 color{0};
+
+        // Bit shift colors into proper positions within color (RGBA)
+        color += red;
+        color <<= 8;
+        color += green;
+        color <<= 8;
+        color += blue;
+        color <<= 8;
+        color += 0xFF;   // Alpha channel set to opaque
+
+        m_main_buffer[x + (y * SCREEN_WIDTH)] = color;
+    }
 ```

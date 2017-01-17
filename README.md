@@ -1,7 +1,7 @@
 
 # Particle Simulation Using SDL Graphics Library
 
-This program renders a swarm of particles that spin around the screen and change colors.
+This program renders a swarm of particles on screen that spin around in a cirular fashion and change colors. This is my second ever object oriented project and biggest project to date. I am sure that there is ways in which this program could be improved, and I will try to implement improvements as I continue to learn more.
 
 <h2>The Simulation In Action (Click Images For Video)</h2>
 <p align="left">
@@ -14,4 +14,29 @@ This program renders a swarm of particles that spin around the screen and change
 </p>
 
 <h2>How It Works</h2>
-Science.
+A 2D array of color values is loaded to the screen in a repeatedly fast fashion. The brightest color values are localized to one pixel at a time, indicating where the "particles" are on screen. These color values are shifted throughout the 2D array (and in turn from pixel to pixel on screen) which creates the illusion that there are particles flying around. 
+
+<b>The "Particle" Class</b>
+Each particle (or focal point of brightness) contains 3 essential parts: an x-coordinate, a y-coordinate, and a vector (a speed and direction). As the program runs, the vector is what dictates where the particle will move to next.
+```sh
+class Particle {
+        public:
+            double m_x_cord;
+            double m_y_cord;
+
+        public:
+            Particle();
+            virtual ~Particle() {};
+            void move_particle(int);
+
+        private:
+            double m_x_vector;
+            double m_y_vector;
+            double m_speed;
+            double m_direction;
+
+        private:
+            void initialize();
+    };
+
+```

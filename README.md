@@ -42,8 +42,8 @@ class Particle {
     };
 
 ```
-<br>
-Particles are initialized center screen, are given a random speed (-1 to 1) and a random direction (0 to 2pi).
+<br><br>
+Particles are initialized center screen, given a random speed (-1 to 1), and a random direction (0 to 2pi).
 ```sh
    void Particle::initialize() {
         std::random_device rd;
@@ -57,5 +57,27 @@ Particles are initialized center screen, are given a random speed (-1 to 1) and 
 
         // Generate random particle direction between 0 and 2 Pi.
         m_direction = angle_dist(rd);
+    }
+```
+<br><br>
+To move the particles, their direction is changed each cycle of the program.
+```sh
+    void Particle::move_particle(int interval) {
+        // Changes particle direction from straight to curved/circular.
+        m_direction += (interval * 0.0005);
+
+        // Generate particle vector. Using different trig functions here can cause very
+        // interesting visual effects.
+        m_x_vector = m_speed * sin(m_direction);
+        m_y_vector = m_speed * cos(m_direction);
+
+        // Moves particle by vector values.
+        m_x_cord += (m_x_vector * interval);
+        m_y_cord += (m_y_vector * interval);
+
+        // If particle moves outside of the SDL window, reinitialize it to
+        // the center of the window and give it a new direction and speed.
+        if(m_x_cord < -1 || m_x_cord > 1 || m_y_cord < -1 || m_y_cord >1)
+            initialize();
     }
 ```

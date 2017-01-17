@@ -6,6 +6,8 @@
 #define PARTICLE_SIMULATION_SCREEN_H
 
 #include <SDL2/SDL.h>
+#include "Swarm.h"
+#include <iostream>
 
 namespace ps {
 
@@ -24,6 +26,7 @@ namespace ps {
             void init_buffers();
             void update();
             void box_blur();
+            void load_swarm(Swarm &);
             void set_pixel_color(int, int, Uint8, Uint8, Uint8);
             void get_avg_color(int, int, Uint8 &, Uint8 &, Uint8 &);
             bool quit_program();

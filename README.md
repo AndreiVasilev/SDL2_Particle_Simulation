@@ -59,7 +59,7 @@ Particles are initialized center screen, given a random speed (-1 to 1), and a r
         m_direction = angle_dist(rd);
     }
 ```
-<br>
+<br><br>
 Particles move by having their coordinates changed. These coordinates are saved as floating point numbers, and during each cycle of the program these coordinates are slightly changed by adding vector values to them. These vector values are also constantly changing. However, because the SDL window is represented by a grid of integer values, particle coordinate values are truncated. This means that the particles only move when either of their x or y coordinates changes to new whole-number value.
 ```sh
     void Particle::move_particle(int interval) {

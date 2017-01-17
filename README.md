@@ -180,7 +180,6 @@ The screen.load_swarm() method is where the magic starts to happen. Each particl
         }
     }
 ```
-<br>
 ```sh
     void Screen::set_pixel_color(int x, int y, Uint8 red, Uint8 green, Uint8 blue) {
 

@@ -121,6 +121,7 @@ namespace ps {
             NULL           // Amount of renderer to be updated, NULL for entire renderer.
         );
 
+        // Loads the renderer to the SDL window.
         SDL_RenderPresent(m_renderer);
     }
 

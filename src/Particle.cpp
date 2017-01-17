@@ -32,9 +32,9 @@ namespace ps {
         // Changes particle direction from straight to curved/circular.
         m_direction += (interval * 0.0005);
 
-        // Generate particle vector. Using trig here changes particle coordinate plane
-        // from cartesian to polar. Using different trig functions here can cause very
-        // interesting visual effects.
+        // Assign particle vector. Using trig here changes particle coordinates
+        // from cartesian to polar. Using different trig functions here can cause 
+        // very interesting visual effects.
         m_x_vector = m_speed * sin(m_direction);
         m_y_vector = m_speed * cos(m_direction);
 

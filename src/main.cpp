@@ -10,7 +10,7 @@ int main() {
         // Load current particle swarm.
         screen.load_swarm(swarm);
 
-        // Update SDL window with new particle positions and colors
+        // Update SDL window with new particle positions and colors.
         screen.update();
 
         // Manipulate particle positions for next iteration. 

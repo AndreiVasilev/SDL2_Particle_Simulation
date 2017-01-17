@@ -13,7 +13,8 @@ int main() {
         // Update SDL window with new particle positions and colors
         screen.update();
 
-        // Manipulate particle positions.
+        // Manipulate particle positions for next iteration. 
+        // Ticks are used to ensure consistent/proportional movement.
         swarm.move(SDL_GetTicks());
 
         // Apply gaussian blur effect.

@@ -1,5 +1,5 @@
 
-# Particle Simulation Using SDL Graphics Library
+# Particle Simulation Using SDL Library
 
 This program renders a swarm of particles on screen that spin around in a cirular fashion and change colors. This is my second ever object oriented project and biggest project to date. I am sure that there are ways in which this program could be improved, and I very open to comments or feedback. I will try to implement improvements as I continue to learn more.
 

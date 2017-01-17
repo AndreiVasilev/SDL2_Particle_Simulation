@@ -43,7 +43,6 @@ class Particle {
 
 ```
 <br>
-<br>
 Particles are initialized center screen, are given a random speed (-1 to 1) and a random direction (0 to 2pi).
 ```sh
    void Particle::initialize() {

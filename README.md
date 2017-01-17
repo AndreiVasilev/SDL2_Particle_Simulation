@@ -159,7 +159,7 @@ class Screen {
     };
 ```
 <br><br>
-The screen.load_swarm() method is where the magic starts to happen. Each particle within the swarm particle array is looked at. The coordinates saved within each particle object are taken and mapped to a position within the buffer that corresponds to a position within the 2D pixel array of the SDL window. The set_pixel_color() method then takes that position in the buffer and fills it with a hexidecimal color code. In turn, what appears on screen is a pixel (or particle) with that assigned color.
+The screen.load_swarm() method is where the magic starts to happen. The coordinates saved within each particle object are looked at and a corresponding position within the buffer is pulled up (which corresponds to a position in the 2D pixel array of the SDL window). The set_pixel_color() method then takes that position in the buffer and fills it with a hexidecimal color code. In turn, what appears on screen is a pixel (or particle) with that assigned color.
 ```sh
     void Screen::load_swarm(Swarm &swarm) {
         // Load swarm particles.
@@ -199,5 +199,82 @@ The screen.load_swarm() method is where the magic starts to happen. Each particl
         color += 0xFF;   // Alpha channel set to opaque
 
         m_main_buffer[x + (y * SCREEN_WIDTH)] = color;
+    }
+```
+<br><br>
+Once all particles have been looked at, and the buffer has been correspondingly filled with color values, the buffer is loaded into the texture, the texture goes to the renderer, and the renderer is loaded on screen.
+```sh
+    void Screen::update() {
+        // Updates the texture containing the pixel data.
+        SDL_UpdateTexture(
+            m_texture,                      // Texture to be updated.
+            NULL,                           // Area in texture to update, NULL for entire area.
+            m_main_buffer,                  // Updated pixel data being sent to the texture.
+            SCREEN_WIDTH * sizeof(Uint32)   // Number of bytes in a row of pixel data.
+        );
+
+        // Copies the newly updated texture into the renderer.
+        SDL_RenderCopy(
+            m_renderer,    // The renderer to be updated.
+            m_texture,     // The source texture.
+            NULL,          // Amount of texture to be copied, NULL for entire texture.
+            NULL           // Amount of renderer to be updated, NULL for entire renderer.
+        );
+        
+        // Loads the renderer to the SDL window.
+        SDL_RenderPresent(m_renderer);
+    }
+```
+<br><br>
+After this, the particles within the swarm array are moved (through a process explained earlier) for the next program cycle. After the particles have been moved, a gaussian blur is applied to the currently rendered SDL window. This blur effect is created by averaging out colors. Each pixel on screen is effectively reassigned a color which is the average of itself and the 8 pixels that surround it.
+However, this process is not carried out by looking at the actual screen, but instead by looking at the buffer that was just previously loaded. The buffer is processed, colors are averaged out, and then the buffer is reloaded to the screen. 
+
+This effect causes the "particles" too look as though they are leaving a trail behind as they travel. This effect also takes care of having to clear the screen. Normally, you would have to clear the texture every time you load
+```sh
+    void Screen::box_blur() {
+        // Main_buffer and blur_buffer are swapped, blur is applied to blur_buffer, and then
+        // during each next iteration buffers are swapped again to display the blur on screen.
+        std::swap(m_main_buffer, m_blur_buffer);
+
+        // Iterates through each pixel in the buffer, gets average color of surrounding pixels,
+        // and applies average surrounding color to each pixel. Creates a gaussian blur effect.
+        for(int y = 0; y < SCREEN_HEIGHT; ++y) {
+            for(int x = 0; x < SCREEN_WIDTH; ++x) {
+                Uint8 red{0}, green{0}, blue{0};
+                get_avg_color(x, y, red, green, blue);
+                set_pixel_color(x, y, red, green, blue);
+            }
+        }
+    }
+```
+```sh
+    void Screen::get_avg_color(int x, int y, Uint8 &red, Uint8 &green, Uint8 &blue) {
+        int red_total{0}, green_total{0}, blue_total{0};
+
+        // Totals the color values of the input pixel (x, y) and the 8 pixels that surround it.
+        for(int row = -1; row <= 1; ++row) {
+            for(int col = -1; col <= 1; ++col) {
+                int current_x = x + col,
+                    current_y = y + row;
+
+                // Only grab values of pixels that are actually within the window
+                if(current_x >= 0 && current_x < SCREEN_WIDTH &&
+                   current_y >= 0 && current_y < SCREEN_HEIGHT) {
+
+                    // Get the color value of the current pixel
+                    Uint32 color = m_blur_buffer[current_x + (current_y * SCREEN_WIDTH)];
+
+                    // Bit shift RGB values of pixel color into color totals.
+                    red_total += static_cast<Uint8>(color >> 24);
+                    green_total += static_cast<Uint8>(color >> 16);
+                    blue_total += static_cast<Uint8>(color >> 8);
+                }
+            }
+        }
+        // Averages the color values of the input pixel (x, y) and its 8 surrounding pixels.
+        // Changing the denominator here can create interesting visual effects.
+        red = static_cast<Uint8>(red_total/9);
+        green = static_cast<Uint8>(green_total/9);
+        blue = static_cast<Uint8>(blue_total/9);
     }
 ```

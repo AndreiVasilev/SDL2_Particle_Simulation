@@ -21,7 +21,7 @@ A 2D array of color values is loaded to the screen in a repeatedly fast fashion.
 
 Each particle (or focal point of brightness) contains 3 essential parts: an x-coordinate, a y-coordinate, and a vector (a speed and direction). As the program runs, the vector is what dictates where the particle will move to next.
 ```sh
-class Particle {
+    class Particle {
         public:
             double m_x_cord;
             double m_y_cord;
@@ -60,15 +60,15 @@ Particles are initialized center screen, given a random speed (-1 to 1), and a r
     }
 ```
 <br><br>
-Particles move by having their coordinates changed. These coordinates are saved as floating point numbers, and during each cycle of the program these coordinates are slightly changed by adding vector values to them. These vector values are also constantly changing. However, because the SDL window is represented by a grid of integer values, particle coordinate values are truncated. This means that the particles only move when either of their x or y coordinates changes to new whole-number value.
+Particles move by having their coordinates changed. These coordinates are saved as floating point numbers, and during each cycle of the program these coordinates are slightly changed by adding vector values to them. These vector values are also constantly changing. However, because the SDL window is represented by a grid of integer values, particle coordinate values are truncated. This means that particles only move when their x or y coordinates change to a new whole-number value. 
 ```sh
     void Particle::move_particle(int interval) {
         // Changes particle direction from straight to curved/circular.
         m_direction += (interval * 0.0005);
 
-        // Generate particle vector. Using trig here changes particle coordinate plane
-        // from cartesian to polar. Using different trig functions here can cause very
-        // interesting visual effects.
+        // Assign particle vector. Using trig here changes particle coordinates
+        // from cartesian to polar. Using different trig functions here can cause
+        // very interesting visual effects.
         m_x_vector = m_speed * sin(m_direction);
         m_y_vector = m_speed * cos(m_direction);
 
@@ -81,4 +81,26 @@ Particles move by having their coordinates changed. These coordinates are saved 
         if(m_x_cord < -1 || m_x_cord > 1 || m_y_cord < -1 || m_y_cord >1)
             initialize();
     }
+```
+<br><br>
+<b>The Swarm Class</b>
+
+The swarm class is a container for all the particles. All particles are saved within an array and can be accessed individually.
+```sh
+    class Swarm {
+        public:
+            const static int N_PARTICLES{6000};  // Change to adjust particle count.
+
+        public:
+            Swarm();
+            virtual ~Swarm();
+            void move(int);
+            const Particle * const get_particles();
+
+
+        private:
+            Particle *m_particle_array { nullptr };
+            int last_clock;
+            int interval;
+    };
 ```

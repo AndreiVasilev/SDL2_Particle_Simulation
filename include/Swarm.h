@@ -6,13 +6,12 @@
 #define PARTICLE_SIMULATION_SWARM_H
 
 #include "Particle.h"
-#include "Screen.h"
 
 namespace ps {
 
     class Swarm {
         public:
-            const static int N_PARTICLES{6000};
+            const static int N_PARTICLES{6000};  // Change to adjust particle count.
 
         public:
             Swarm();

@@ -42,3 +42,21 @@ class Particle {
     };
 
 ```
+<br>
+<br>
+Particles are initialized center screen, are given a random speed (-1 to 1) and a random direction (0 to 2pi).
+```sh
+   void Particle::initialize() {
+        std::random_device rd;
+        std::uniform_real_distribution<double> speed_dist(-1, 1);
+        std::uniform_real_distribution<double> angle_dist(0, 2 * M_PI);
+        m_x_cord = 0, m_y_cord = 0;
+
+        // Generate random particle speed. Speed is squared causing
+        // particle distribution to be exponential instead of linear.
+        m_speed = pow(speed_dist(rd) * 0.04, 2);
+
+        // Generate random particle direction between 0 and 2 Pi.
+        m_direction = angle_dist(rd);
+    }
+```

@@ -28,7 +28,7 @@ namespace ps {
     void Screen::init_SDL() {
         // Initialize SDL library. Returns 0 if successful.
         // Must be called before using any SDL functionality.
-        if(SDL_Init(SDL_INIT_VIDEO) != 0) {
+        if(SDL_Init(SDL_INIT_VIDEO)) {
             std::cout << "SDL_Init Error: \n" << SDL_GetError() << std::endl;
             exit(1);
         }
@@ -47,7 +47,7 @@ namespace ps {
         );
 
         // Check if window creation failed.
-        if(m_window == nullptr) {
+        if(!m_window) {
             std::cout << "SDL_CreateWindow Error: \n" << SDL_GetError() << std::endl;
             exit(2);
         }
@@ -65,7 +65,7 @@ namespace ps {
             SDL_RENDERER_ACCELERATED);     // Allow renderer to use hardware acceleration.
 
         // Check if renderer creation failed.
-        if(m_renderer == nullptr) {
+        if(!m_renderer) {
             std::cout << "SDL_CreateRenderer Error: \n" << SDL_GetError() << std::endl;
             SDL_DestroyWindow(m_window);
             exit(3);
@@ -84,7 +84,7 @@ namespace ps {
         );
 
         // Check if texture creation failed.
-        if(m_texture == nullptr) {
+        if(!m_texture) {
             std::cout << "SDL_CreateTexture Error: \n" << SDL_GetError() << std::endl;
             SDL_DestroyRenderer(m_renderer);
             SDL_DestroyWindow(m_window);

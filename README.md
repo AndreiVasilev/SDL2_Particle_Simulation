@@ -131,25 +131,25 @@ This class does all of the heavy lifting. It is in charge of all SDL functionali
 ```sh
 class Screen {
         public:
-            const static int SCREEN_WIDTH {1000};
-            const static int SCREEN_HEIGHT {800};
-
-        public:
             Screen();
             virtual ~Screen();
+            void update();
+            void box_blur();
+            void load_swarm(Swarm &);
+            bool quit_program();
+
+        private:
             void init_SDL();
             void init_window();
             void init_renderer();
             void init_texture();
             void init_buffers();
-            void update();
-            void box_blur();
-            void load_swarm(Swarm &);
             void set_pixel_color(int, int, Uint8, Uint8, Uint8);
             void get_avg_color(int, int, Uint8 &, Uint8 &, Uint8 &);
-            bool quit_program();
 
         private:
+            const static int SCREEN_WIDTH {1000};
+            const static int SCREEN_HEIGHT {800};
             SDL_Window *m_window { nullptr };
             SDL_Renderer *m_renderer { nullptr };
             SDL_Texture *m_texture { nullptr };

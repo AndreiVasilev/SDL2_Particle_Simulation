@@ -6,7 +6,7 @@ This program renders a swarm of particles on screen that spin around in a cirula
 <h2>The Simulation In Action (Click Images For Video)</h2>
 <p align="left">
   <a href="https://youtu.be/w7CoTIjSGRQ">
-    <img src="https://i.imgur.com/MEfJMwk.gif"/>
+    <img src="https://imgur.com/MEfJMwk"/>
   </a>
 </p>
 
